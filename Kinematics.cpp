@@ -40,53 +40,11 @@ Kinematics::arrWrap4 Kinematics::getPosition(float angle1, float angle2, float a
   struct arrWrap4 htm_12 = getHTM(R_12, d_12);
   struct arrWrap4 htm_23 = getHTM(R_23, d_23);
 
-  //Serial.begin(9600);
-  // printMatrix(Serial, "R_01", R_01);
-  // printMatrix(Serial, "R_12", R_12);
-  // printMatrix(Serial, "R_23", R_23);
-  // delay(1000);
-  // printMatrix(Serial, "htm_01", htm_01);
-  // printMatrix(Serial, "htm_12", htm_12);
-  // printMatrix(Serial, "htm_23", htm_23);
-
-
   struct arrWrap4 htm_03  = multiply(multiply(htm_01, htm_12), htm_23);
-
-  // struct arrWrap4 matrix1 = {
-  //         {1, 0, 0, 0}, 
-  //         {0, 1, 0, 0}, 
-  //         {0, 0, 1, 0},
-  //         {0, 0, 0, 1}
-  // };
-
-  // struct arrWrap4 matrix2 = {
-  //         {12, 22, 12, 12}, 
-  //         {42, 52, 62, 12}, 
-  //         {22, 32, 52, 12},
-  //         {22, 32, 52, 12}
-  // };
-
-  // struct arrWrap4 matrix4 = {
-  //         {2, 2, 2, 2}, 
-  //         {4, 5, 6, 1}, 
-  //         {2, 3, 5, 1},
-  //         {2, 3, 5, 1}
-  // };
-
-  // struct arrWrap4 matrix3 = multiply(matrix1, matrix2);
-
-  //Serial.begin(2000000);
-  // printMatrix(Serial, "matrix3", matrix3);
-
-  // struct arrWrap4 matrix8 = multiply(matrix1, matrix2);
-
-  //printMatrix(Serial, "matrix8", matrix8);
-
-  //struct arrWrap4 matrix5 = multiply(matrix1, matrix4);
-
 
   return htm_03;
 }
+
 
 // implement inverse kinematics using analytical approach by graphical method and trig
 Kinematics::arrWrap1 Kinematics::getAngles(float link_len1, float link_len2, float base_height, float end_x, float end_y, float end_z) {
@@ -214,13 +172,6 @@ Kinematics::arrWrap3 Kinematics::multiply(struct arrWrap3 matrixA, struct arrWra
       {0, 0, 0}
   }};
 
-  Serial.begin(2000000);
-
-  printMatrix(Serial, "A", matrixA);
-  printMatrix(Serial, "B", matrixB);
-
-  printMatrix(Serial, "start", matrixAB);
-
   // i follows moving row on matrixA
   for (int i = 0; i < 3; i++) {
     // k follows moving column on matrixB
@@ -234,30 +185,19 @@ Kinematics::arrWrap3 Kinematics::multiply(struct arrWrap3 matrixA, struct arrWra
     }
   }
 
-  printMatrix(Serial, "end", matrixAB);
-  Serial.println("");
-  delay(10);
-
   return matrixAB;
 }
 
 // multiply two 4x4 matrices
 
 Kinematics::arrWrap4 Kinematics::multiply(struct arrWrap4 matrixA, struct arrWrap4 matrixB) {
-  // declare and initialize final matrix
-  // Serial.begin(2000000);
-  
+  // declare and initialize final matrix  
   struct arrWrap4 matrixAB = {{
       {0, 0, 0, 0}, 
       {0, 0, 0, 0}, 
       {0, 0, 0, 0},
       {0, 0, 0, 0}
   }};
-
-  // printMatrix(Serial, "A", matrixA);
-  // printMatrix(Serial, "B", matrixB);
-
-  // printMatrix(Serial, "start", matrixAB);
 
   // i follows moving row on matrixA
   for (int i = 0; i < 4; i++) {
@@ -271,10 +211,6 @@ Kinematics::arrWrap4 Kinematics::multiply(struct arrWrap4 matrixA, struct arrWra
       }
     }
   }
-
-  // printMatrix(Serial, "end", matrixAB);
-  // Serial.println("");
-  // delay(10);
 
   return matrixAB;
 }

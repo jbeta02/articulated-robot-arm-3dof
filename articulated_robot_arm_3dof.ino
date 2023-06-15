@@ -14,10 +14,9 @@ void setup() {
   servo0.attach(9);
   servo1.attach(10);
 
-  Kinematics::arrWrap4 pose = kinematics.getPosition(10, 20, 30, 1, 1, 0);
+  Kinematics::arrWrap4 pose = kinematics.getPosition(10, 20, 20, 1, 1, 0);
 
   Serial.begin(9600);
-  Serial.println("finished");
   kinematics.printMatrix(Serial, "final 4x4 matix", pose);
 }
 
