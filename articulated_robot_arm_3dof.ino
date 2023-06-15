@@ -14,11 +14,11 @@ void setup() {
   servo0.attach(9);
   servo1.attach(10);
 
-  Kinematics::arr4 pose = kinematics.getPosition(0, 0, 0, 1, 1, 0);
+  Kinematics::arrWrap4 pose = kinematics.getPosition(10, 20, 30, 1, 1, 0);
 
   Serial.begin(9600);
   Serial.println("finished");
-  //kinematics.printMatrix(Serial, "4x4 matix", pose);
+  kinematics.printMatrix(Serial, "final 4x4 matix", pose);
 }
 
 void loop() { ///////////////////////////////////////////////TODO fix camal case for parameter names

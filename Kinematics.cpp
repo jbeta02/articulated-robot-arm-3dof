@@ -10,7 +10,7 @@ Kinematics::Kinematics() {
 }
 
 
-Kinematics::arr4 Kinematics::getPosition(float angle1, float angle2, float angle3, float link_len1, float link_len2, float base_height) {
+Kinematics::arrWrap4 Kinematics::getPosition(float angle1, float angle2, float angle3, float link_len1, float link_len2, float base_height) {
   // convert angles from dgrees to radians
   angle1 = toRadians(angle1);
   angle2 = toRadians(angle2);
@@ -18,68 +18,78 @@ Kinematics::arr4 Kinematics::getPosition(float angle1, float angle2, float angle
 
 
   // projection of coordiante from 1 on coordinate frame 0
-  const float projection1_on_0[3][3] = {
-    {1, 0, 0}, 
-    {0, 0, -1}, 
-    {0, 1, 0}
-  };
+  const struct arrWrap3 projection1_on_0 = {{
+      {1, 0, 0}, 
+      {0, 0, -1}, 
+      {0, 1, 0}
+  }};
 
 
   // rotation matrices
-  arr3 R_01 = multiply(projection1_on_0, yRotation(angle1));
-  arr3 R_12 = multiply(identityMatrix, zRotation(angle2));
-  arr3 R_23 = multiply(identityMatrix, zRotation(angle3));
+  struct arrWrap3 R_01 = multiply(projection1_on_0, yRotation(angle1));
+  struct arrWrap3 R_12 = multiply(identityMatrix, zRotation(angle2));
+  struct arrWrap3 R_23 = multiply(identityMatrix, zRotation(angle3));
 
   // displacement vectors
-  float d_01[3][1] = {{0}, {0}, {base_height}};
-  float d_12[3][1] = {{link_len1 * cos(angle2)}, {link_len2 * sin(angle2)}, {0}};
-  float d_23[3][1] = {{link_len2 * cos(angle3)}, {link_len2 * sin(angle3)}, {0}};
+  struct arrWrap1 d_01 = {{{0}, {0}, {base_height}}};
+  struct arrWrap1 d_12 = {{{link_len1 * cos(angle2)}, {link_len2 * sin(angle2)}, {0}}};
+  struct arrWrap1 d_23 = {{{link_len2 * cos(angle3)}, {link_len2 * sin(angle3)}, {0}}};
 
   // homogenous transformation matrices
-  arr4 htm_01 = getHTM(R_01, d_01);
-  arr4 htm_12 = getHTM(R_12, d_12);
-  arr4 htm_23 = getHTM(R_23, d_23);
+  struct arrWrap4 htm_01 = getHTM(R_01, d_01);
+  struct arrWrap4 htm_12 = getHTM(R_12, d_12);
+  struct arrWrap4 htm_23 = getHTM(R_23, d_23);
 
-  //arr4 htm_03  = multiply(multiply(htm_01, htm_12), htm_23);
-
-  float matrix1[4][4] = {
-          {1, 0, 0, 0}, 
-          {0, 1, 0, 0}, 
-          {0, 0, 1, 0},
-          {0, 0, 0, 1}
-  };
-
-  float matrix2[4][4] = {
-          {12, 22, 12, 12}, 
-          {42, 52, 62, 12}, 
-          {22, 32, 52, 12},
-          {22, 32, 52, 12}
-  };
-
-  float matrix4[4][4] = {
-          {2, 2, 2, 2}, 
-          {4, 5, 6, 1}, 
-          {2, 3, 5, 1},
-          {2, 3, 5, 1}
-  };
-
-  arr4 matrix3 = multiply(matrix1, matrix2);
-
-  Serial.begin(2000000);
-  printMatrix(Serial, "matrix3", matrix3);
-
-  arr4 matrix8 = multiply(matrix1, matrix2);
-
-  printMatrix(Serial, "matrix8", matrix8);
-
-  //arr4 matrix5 = multiply(matrix1, matrix4);
+  //Serial.begin(9600);
+  // printMatrix(Serial, "R_01", R_01);
+  // printMatrix(Serial, "R_12", R_12);
+  // printMatrix(Serial, "R_23", R_23);
+  // delay(1000);
+  // printMatrix(Serial, "htm_01", htm_01);
+  // printMatrix(Serial, "htm_12", htm_12);
+  // printMatrix(Serial, "htm_23", htm_23);
 
 
-  return htm_23;
+  struct arrWrap4 htm_03  = multiply(multiply(htm_01, htm_12), htm_23);
+
+  // struct arrWrap4 matrix1 = {
+  //         {1, 0, 0, 0}, 
+  //         {0, 1, 0, 0}, 
+  //         {0, 0, 1, 0},
+  //         {0, 0, 0, 1}
+  // };
+
+  // struct arrWrap4 matrix2 = {
+  //         {12, 22, 12, 12}, 
+  //         {42, 52, 62, 12}, 
+  //         {22, 32, 52, 12},
+  //         {22, 32, 52, 12}
+  // };
+
+  // struct arrWrap4 matrix4 = {
+  //         {2, 2, 2, 2}, 
+  //         {4, 5, 6, 1}, 
+  //         {2, 3, 5, 1},
+  //         {2, 3, 5, 1}
+  // };
+
+  // struct arrWrap4 matrix3 = multiply(matrix1, matrix2);
+
+  //Serial.begin(2000000);
+  // printMatrix(Serial, "matrix3", matrix3);
+
+  // struct arrWrap4 matrix8 = multiply(matrix1, matrix2);
+
+  //printMatrix(Serial, "matrix8", matrix8);
+
+  //struct arrWrap4 matrix5 = multiply(matrix1, matrix4);
+
+
+  return htm_03;
 }
 
 // implement inverse kinematics using analytical approach by graphical method and trig
-Kinematics::arr1 Kinematics::getAngles(float link_len1, float link_len2, float base_height, float end_x, float end_y, float end_z) {
+Kinematics::arrWrap1 Kinematics::getAngles(float link_len1, float link_len2, float base_height, float end_x, float end_y, float end_z) {
   // using kinematic diagram then splitting diagram into 2 2d diagrams (top view and side view)
   // then use trig to find angles based on given end effector position
 
@@ -135,51 +145,51 @@ Kinematics::arr1 Kinematics::getAngles(float link_len1, float link_len2, float b
   angle2 = toDegrees(angle2);
   angle3 = toDegrees(angle3);
 
-  float angles[3][1] = {{angle1}, {angle2}, {angle3}};
+  struct arrWrap1 angles = {{{angle1}, {angle2}, {angle3}}};
 
   return angles;
 }
 
 // homogenous transformation matrix
-Kinematics::arr4 Kinematics::getHTM(arr3 rotationMatrix, arr1 displacementVector) {
-  static float htm[4][4] = {
-    {rotationMatrix[0][0], rotationMatrix[0][1], rotationMatrix[0][2], displacementVector[0][0]}, 
-    {rotationMatrix[0][0], rotationMatrix[0][0], rotationMatrix[0][0], displacementVector[0][1]}, 
-    {rotationMatrix[0][0], rotationMatrix[0][0], rotationMatrix[0][0], displacementVector[0][2]},
+Kinematics::arrWrap4 Kinematics::getHTM(struct arrWrap3 rotationMatrix, struct arrWrap1 displacementVector) {
+  struct arrWrap4 htm = {{
+    {rotationMatrix.arr[0][0], rotationMatrix.arr[0][1], rotationMatrix.arr[0][2], displacementVector.arr[0][0]}, 
+    {rotationMatrix.arr[1][0], rotationMatrix.arr[1][1], rotationMatrix.arr[1][2], displacementVector.arr[0][1]}, 
+    {rotationMatrix.arr[2][0], rotationMatrix.arr[2][1], rotationMatrix.arr[2][2], displacementVector.arr[0][2]},
     {0, 0, 0, 1}
-  };
+  }};
 
   return htm;
 }
 
 
 // rotation be about given axis
-Kinematics::arr3 Kinematics::xRotation(float angle) {
-  static float xRotationMatrix[3][3] = {
+Kinematics::arrWrap3 Kinematics::xRotation(float angle) {
+  struct arrWrap3 xRotationMatrix = {{
     {1, 0, 0}, 
     {0, cos(angle), -sin(angle)}, 
     {0, sin(angle), cos(angle)}
-  };
+  }};
 
   return xRotationMatrix;
 }
 
-Kinematics::arr3 Kinematics::yRotation(float angle) {  
-  static float yRotationMatrix[3][3] = {
+Kinematics::arrWrap3 Kinematics::yRotation(float angle) {  
+  struct arrWrap3 yRotationMatrix = {{
     {cos(angle), 0, sin(angle)}, 
     {0, 1, 0}, 
-    {-sin(angle), 1, cos(angle)}
-  };
+    {-sin(angle), 0, cos(angle)}
+  }};
 
   return yRotationMatrix;
 }
 
-Kinematics::arr3 Kinematics::zRotation(float angle) {
-  static float zRotationMatrix[3][3] = {
+Kinematics::arrWrap3 Kinematics::zRotation(float angle) {
+  struct arrWrap3 zRotationMatrix = {{
     {cos(angle), -sin(angle), 0}, 
     {sin(angle), cos(angle), 0}, 
     {0, 0, 1}
-  };
+  }};
 
   return zRotationMatrix;
 }
@@ -196,13 +206,20 @@ float Kinematics::toDegrees(float radians) {
 }
 
 // multiply two 3x3 matrices
-Kinematics::arr3 Kinematics::multiply(arr3 matrixA, arr3 matrixB) {
+Kinematics::arrWrap3 Kinematics::multiply(struct arrWrap3 matrixA, struct arrWrap3 matrixB) {
   // declare and initialize final matrix
-  static float matrixAB[3][3] = {
-          {0, 0, 0}, 
-          {0, 0, 0}, 
-          {0, 0, 0}
-  };
+  struct arrWrap3 matrixAB = {{
+      {0, 0, 0}, 
+      {0, 0, 0}, 
+      {0, 0, 0}
+  }};
+
+  Serial.begin(2000000);
+
+  printMatrix(Serial, "A", matrixA);
+  printMatrix(Serial, "B", matrixB);
+
+  printMatrix(Serial, "start", matrixAB);
 
   // i follows moving row on matrixA
   for (int i = 0; i < 3; i++) {
@@ -212,40 +229,7 @@ Kinematics::arr3 Kinematics::multiply(arr3 matrixA, arr3 matrixB) {
       for (int j = 0; j < 3; j++) {
 
         // perform dot product
-        matrixAB[i][k] = matrixAB[i][k] + (matrixA[i][j] * matrixB[j][k]);
-      }
-    }
-  }
-
-  return matrixAB;
-}
-
-// multiply two 4x4 matrices
-
-Kinematics::arr4 Kinematics::multiply(arr4 matrixA, arr4 matrixB) {
-  // declare and initialize final matrix
-  Serial.begin(2000000);
-  static float matrixAB[4][4] = { // this array keeps getting saved and overriten with each funtion call (bc it is static)
-          {0, 0, 0, 0}, 
-          {0, 0, 0, 0}, 
-          {0, 0, 0, 0},
-          {0, 0, 0, 0}
-  };
-
-  printMatrix(Serial, "A", matrixA);
-  printMatrix(Serial, "B", matrixB);
-
-  printMatrix(Serial, "start", matrixAB);
-
-  // i follows moving row on matrixA
-  for (int i = 0; i < 4; i++) {
-    // k follows moving column on matrixB
-    for (int k = 0; k < 4; k++) {
-      // j follows moving terms in matrixA and matrixB
-      for (int j = 0; j < 4; j++) {
-
-        // perform dot product
-        matrixAB[i][k] = matrixAB[i][k] + (matrixA[i][j] * matrixB[j][k]);
+        matrixAB.arr[i][k] = matrixAB.arr[i][k] + (matrixA.arr[i][j] * matrixB.arr[j][k]);
       }
     }
   }
@@ -257,23 +241,61 @@ Kinematics::arr4 Kinematics::multiply(arr4 matrixA, arr4 matrixB) {
   return matrixAB;
 }
 
+// multiply two 4x4 matrices
+
+Kinematics::arrWrap4 Kinematics::multiply(struct arrWrap4 matrixA, struct arrWrap4 matrixB) {
+  // declare and initialize final matrix
+  // Serial.begin(2000000);
+  
+  struct arrWrap4 matrixAB = {{
+      {0, 0, 0, 0}, 
+      {0, 0, 0, 0}, 
+      {0, 0, 0, 0},
+      {0, 0, 0, 0}
+  }};
+
+  // printMatrix(Serial, "A", matrixA);
+  // printMatrix(Serial, "B", matrixB);
+
+  // printMatrix(Serial, "start", matrixAB);
+
+  // i follows moving row on matrixA
+  for (int i = 0; i < 4; i++) {
+    // k follows moving column on matrixB
+    for (int k = 0; k < 4; k++) {
+      // j follows moving terms in matrixA and matrixB
+      for (int j = 0; j < 4; j++) {
+
+        // perform dot product
+        matrixAB.arr[i][k] = matrixAB.arr[i][k] + (matrixA.arr[i][j] * matrixB.arr[j][k]);
+      }
+    }
+  }
+
+  // printMatrix(Serial, "end", matrixAB);
+  // Serial.println("");
+  // delay(10);
+
+  return matrixAB;
+}
+
 // print 3x3 matrix
-void Kinematics::printMatrix(HardwareSerial &serial, String title, arr3 pose) { // pass Serial reference as argument
+void Kinematics::printMatrix(HardwareSerial &serial, String title, struct arrWrap3 pose) { // pass Serial reference as argument
   delay(10); // prevents squares from appearing in serial monitor
   serial.println(title);
   
   for (int i = 0; i < 3; i++) {
-    serial.println(String(pose[i][0]) + " " + String(pose[i][1]) + " " + String(pose[i][2]));
+    serial.println(String(pose.arr[i][0]) + " " + String(pose.arr[i][1]) + " " + String(pose.arr[i][2]));
   }
 }
 
 // print 4x4 matrix
-void Kinematics::printMatrix(HardwareSerial &serial, String title, arr4 pose) { // pass Serial reference as argument
+void Kinematics::printMatrix(HardwareSerial &serial, String title, struct arrWrap4 pose) { // pass Serial reference as argument
   delay(10); // prevents squares from appearing in serial monitor
   serial.println(title);
   
   for (int i = 0; i < 4; i++) {
-    serial.println(String(pose[i][0]) + " " + String(pose[i][1]) + " " + String(pose[i][2]) + " " + String(pose[i][3]));
+    serial.println(String(pose.arr[i][0]) + " " + String(pose.arr[i][1]) + " " + String(pose.arr[i][2]) + " " + String(pose.arr[i][3]));
   }
 }
 
