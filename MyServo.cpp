@@ -7,9 +7,8 @@
 
 
 
-MyServo::MyServo(int maxPosition, int maxAngle) {
-  _maxPosition = maxPosition;
-  _maxAngle = maxAngle;
+MyServo::MyServo() {
+  
 }
 
 void MyServo::attach(byte pin) {
@@ -19,4 +18,10 @@ void MyServo::attach(byte pin) {
 void MyServo::move(float angle) {
   int targetAngle = int(round(angle * position_to_angle));
   servo.write(targetAngle);
+}
+
+// will use this and move to make it possible to move angle2 in negative direction
+void MyServo::setBounds(float minAngle, float maxAngle) {
+  this->minAngle = minAngle;
+  this->maxAngle = maxAngle;
 }

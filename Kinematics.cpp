@@ -219,7 +219,7 @@ Kinematics::arrWrap4 Kinematics::multiply(struct arrWrap4 matrixA, struct arrWra
 void Kinematics::printMatrix(HardwareSerial &serial, String title, struct arrWrap1 pose) { // pass Serial reference as argument
   delay(10); // prevents squares from appearing in serial monitor
   serial.println(title);
-  serial.println(String(pose.arr[0][0]) + " " + String(pose.arr[0][1]) + " " + String(pose.arr[0][2]));
+  serial.println(String(pose.arr[0][0]) + " " + String(pose.arr[1][0]) + " " + String(pose.arr[2][0]));
 }
 
 // print 3x3 matrix

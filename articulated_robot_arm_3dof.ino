@@ -3,31 +3,40 @@
 # include "MyServo.h"
 # include "Kinematics.h"
 
-MyServo servo0(1, 1);
-MyServo servo1(1, 1);
+MyServo servo1;
+MyServo servo2;
+MyServo servo3;
+
 
 Kinematics kinematics;
+Kinematics::arrWrap4 pose;
+Kinematics::arrWrap1 jointAngles;
 
 void setup() {
   // put your setup code here, to run once:
 
-  servo0.attach(9);
-  servo1.attach(10);
+  servo1.attach(9);
+  servo2.attach(10);
+  servo3.attach(11);
 
-  Kinematics::arrWrap4 pose = kinematics.getPosition(10, 20, 20, 1, 1, 0);
+  pose = kinematics.getPosition(10, 20, 20, 1, 1, 0);
 
   Serial.begin(9600);
   kinematics.printMatrix(Serial, "end effector pose: ", pose);
 
-  Kinematics::arrWrap1 jointAngles = kinematics.getAngles(1.92, 0.41, 0.35, 1, 1, 0);
-  kinematics.printMatrix(Serial, "joint angles: ", jointAngles);
+  jointAngles = kinematics.getAngles(1.18, 0.68, 0.37, 1, 1, 0);
+  kinematics.printMatrix(Serial, "joint angles (degrees): ", jointAngles);
 }
 
-void loop() { ///////////////////////////////////////////////TODO fix camal case for parameter names
+void loop() { ///////////////////////////////////////////////TODO fix camal case for parameter names and make code follow c++ coding conventions 
   // put your main code here, to run repeatedly:
 
-  servo0.move(0);
-  servo1.move(0);
+  servo1.move(jointAngles.arr[0][0]);
+  servo2.move(jointAngles.arr[1][0]);
+  servo3.move(-jointAngles.arr[2][0]); // move does not like negative number so FOR NOW make neg angle pos
+  // servo1.move(0);
+  // servo2.move(0);
+  // servo3.move(0);
   delay(2000);
 
   // servo0.move(30);

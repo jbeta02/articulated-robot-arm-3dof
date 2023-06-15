@@ -11,18 +11,20 @@ class MyServo {
   
   public:
 
-    MyServo(int maxPosition, int maxAngle);
+    MyServo();
 
     void attach(byte pin);
 
     void move(float angle);
 
+    void setBounds(float minAngle, float maxAngle);
+
 
   private: 
     Servo servo;
 
-    int _maxPosition;
-    int _maxAngle;
+    float minAngle;
+    float maxAngle;
     // obtained from testing and looking at servo specs
     // servo can turn from 0 to 270 but corresponds to 0 to 180 servo write behavior
     float position_to_angle = 2.0/3.0;
