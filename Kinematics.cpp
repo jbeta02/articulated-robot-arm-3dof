@@ -9,7 +9,7 @@ Kinematics::Kinematics() {
 
 }
 
-
+// get end-effector position using foward kinematics
 Kinematics::arrWrap4 Kinematics::getPosition(float angle1, float angle2, float angle3, float link_len1, float link_len2, float base_height) {
   // convert angles from dgrees to radians
   angle1 = toRadians(angle1);
@@ -47,7 +47,7 @@ Kinematics::arrWrap4 Kinematics::getPosition(float angle1, float angle2, float a
 
 
 // implement inverse kinematics using analytical approach by graphical method and trig
-Kinematics::arrWrap1 Kinematics::getAngles(float link_len1, float link_len2, float base_height, float end_x, float end_y, float end_z) {
+Kinematics::arrWrap1 Kinematics::getAngles(float end_x, float end_y, float end_z, float link_len1, float link_len2, float base_height) {
   // using kinematic diagram then splitting diagram into 2 2d diagrams (top view and side view)
   // then use trig to find angles based on given end effector position
 
@@ -81,19 +81,19 @@ Kinematics::arrWrap1 Kinematics::getAngles(float link_len1, float link_len2, flo
     angle1 = atan(end_y / end_x);
   }
 
-  // get angle2
 
+  // get angle2
   bigTriBase = sqrt(pow(end_x, 2) + pow(end_y, 2));
   bigTriHeight = end_z - base_height;
   phi2 = atan(bigTriHeight / bigTriBase);
 
   hypot = sqrt(pow(bigTriBase, 2) + pow(bigTriHeight, 2));
-  phi1 = acos((pow(link_len2, 2) - pow(link_len1, 2) - pow(hypot, 2)) / -2 * link_len1 * hypot);
+  phi1 = acos((pow(link_len2, 2) - pow(link_len1, 2) - pow(hypot, 2)) / (-2 * link_len1 * hypot));
 
   angle2 = phi2 + phi1;
 
-  // get angle3
 
+  // get angle3
   phi3 = acos((pow(hypot, 2) - pow(link_len1, 2) - pow(link_len2, 2)) / (-2 * link_len1 * link_len2));
   angle3 = -(toRadians(180) - phi3); //neg for elbow up (remove neg for elbow down)
 
@@ -213,6 +213,13 @@ Kinematics::arrWrap4 Kinematics::multiply(struct arrWrap4 matrixA, struct arrWra
   }
 
   return matrixAB;
+}
+
+// print 1x1 matrix
+void Kinematics::printMatrix(HardwareSerial &serial, String title, struct arrWrap1 pose) { // pass Serial reference as argument
+  delay(10); // prevents squares from appearing in serial monitor
+  serial.println(title);
+  serial.println(String(pose.arr[0][0]) + " " + String(pose.arr[0][1]) + " " + String(pose.arr[0][2]));
 }
 
 // print 3x3 matrix

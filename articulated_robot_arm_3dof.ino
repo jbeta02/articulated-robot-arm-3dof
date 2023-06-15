@@ -17,7 +17,13 @@ void setup() {
   Kinematics::arrWrap4 pose = kinematics.getPosition(10, 20, 20, 1, 1, 0);
 
   Serial.begin(9600);
-  kinematics.printMatrix(Serial, "final 4x4 matix", pose);
+  kinematics.printMatrix(Serial, "end effector pose: ", pose);
+
+  Kinematics::arrWrap1 jointAngles = kinematics.getAngles(1.92, 0.41, 0.35, 1, 1, 0);
+  kinematics.printMatrix(Serial, "joint angles: ", jointAngles);
+
+  double x = 1001;
+  Serial.println(x);
 }
 
 void loop() { ///////////////////////////////////////////////TODO fix camal case for parameter names

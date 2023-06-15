@@ -34,9 +34,10 @@ class Kinematics {
     // forward kinematics
     struct arrWrap4 getPosition(float angle1, float angle2, float angle3, float link_len1, float link_len2, float base_height);
     // inverse kinematics
-    struct arrWrap1 getAngles(float link_len1, float link_len2, float base_height, float end_x, float end_y, float end_z);
+    struct arrWrap1 getAngles(float end_x, float end_y, float end_z, float link_len1, float link_len2, float base_height);
 
     // print matrix
+    void printMatrix(HardwareSerial &serial, String title, struct arrWrap1 pose);
     void printMatrix(HardwareSerial &serial, String title, struct arrWrap3 pose);
     void printMatrix(HardwareSerial &serial, String title, struct arrWrap4 pose);
 
