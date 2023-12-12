@@ -16,12 +16,17 @@ void MyServo::attach(byte pin) {
 }
 
 void MyServo::move(float angle) {
-  int targetAngle = int(round(angle * position_to_angle));
+  int targetAngle = int(round((angle + originShift) * position_to_angle));
   servo.write(targetAngle);
 }
 
-// will use this and move to make it possible to move angle2 in negative direction
+// set servo input bounds (not needed since servo will aleady get as close to target as it can even if target oob)
 void MyServo::setBounds(float minAngle, float maxAngle) {
   this->minAngle = minAngle;
   this->maxAngle = maxAngle;
+}
+
+// shift origin to allow for negative values that will fit within servo coordinate system and bounds
+void MyServo::shiftOrigin(float originShift) {
+  this->originShift = originShift;
 }

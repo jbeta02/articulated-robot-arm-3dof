@@ -10,13 +10,6 @@ class Kinematics {
   
   public:
 
-    // classic arrays don't work well going in and out of functions
-    // will attempt using struct to
-    // this will allow me to: 
-    //      - deep copy the array data (fixes problem with using static arrays)
-    //      - declare a local array in a function that is "reset" after every function call
-    //      - pass arrays as arguments and return them without losing important data
-    //      - initalize their elements in a fimilar manner
     struct arrWrap1 {
       float arr[3][1];
     };

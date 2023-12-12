@@ -45,7 +45,7 @@ Kinematics::arrWrap4 Kinematics::getPosition(float angle1, float angle2, float a
   return htm_03;
 }
 
-
+// get angles given end effector position and link lens
 // implement inverse kinematics using analytical approach by graphical method and trig
 Kinematics::arrWrap1 Kinematics::getAngles(float end_x, float end_y, float end_z, float link_len1, float link_len2, float base_height) {
   // using kinematic diagram then splitting diagram into 2 2d diagrams (top view and side view)
@@ -69,7 +69,7 @@ Kinematics::arrWrap1 Kinematics::getAngles(float end_x, float end_y, float end_z
 
   // deal with x position at angle1 at 90 degrees
   if (end_x == 0) {
-    angle1 = toRadians(90);
+    angle1 = 0;//toRadians(90);
   }
 
   // deal with x position being negative
@@ -219,7 +219,8 @@ Kinematics::arrWrap4 Kinematics::multiply(struct arrWrap4 matrixA, struct arrWra
 void Kinematics::printMatrix(HardwareSerial &serial, String title, struct arrWrap1 pose) { // pass Serial reference as argument
   delay(10); // prevents squares from appearing in serial monitor
   serial.println(title);
-  serial.println(String(pose.arr[0][0]) + " " + String(pose.arr[1][0]) + " " + String(pose.arr[2][0]));
+  //serial.println(String(pose.arr[0][0]) + " " + String(pose.arr[1][0]) + " " + String(pose.arr[2][0]));
+  serial.println(String(pose.arr[0][0]) + " " + String(pose.arr[0][1]) + " " + String(pose.arr[0][2]));
 }
 
 // print 3x3 matrix

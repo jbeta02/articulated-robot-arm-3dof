@@ -19,6 +19,8 @@ class MyServo {
 
     void setBounds(float minAngle, float maxAngle);
 
+    void shiftOrigin(float originShift);
+
 
   private: 
     Servo servo;
@@ -28,6 +30,7 @@ class MyServo {
     // obtained from testing and looking at servo specs
     // servo can turn from 0 to 270 but corresponds to 0 to 180 servo write behavior
     float position_to_angle = 2.0/3.0;
+    float originShift;
     
 };
 
