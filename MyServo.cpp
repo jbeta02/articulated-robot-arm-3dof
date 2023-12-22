@@ -16,8 +16,20 @@ void MyServo::attach(byte pin) {
 }
 
 void MyServo::move(float angle) {
-  int targetAngle = int(round((angle + originShift) * position_to_angle));
-  servo.write(targetAngle);
+  if (angle < minAngle) {
+    angle = minAngle;
+    int targetAngle = int(round((angle + originShift) * position_to_angle));
+    servo.write(targetAngle);
+  }
+  if (angle > maxAngle) {
+    angle = maxAngle;
+    int targetAngle = int(round((angle + originShift) * position_to_angle));
+    servo.write(targetAngle);
+  }
+  else {
+    int targetAngle = int(round((angle + originShift) * position_to_angle));
+    servo.write(targetAngle);
+  }
 }
 
 // set servo input bounds (not needed since servo will aleady get as close to target as it can even if target oob)

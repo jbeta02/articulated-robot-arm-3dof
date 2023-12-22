@@ -3,6 +3,7 @@
 # include "MyServo.h"
 # include "Kinematics.h"
 
+MyServo handServo;
 MyServo servo1;
 MyServo servo2;
 MyServo servo3;
@@ -14,11 +15,17 @@ Kinematics::arrWrap1 jointAngles;
 void setup() {
   // put your setup code here, to run once:
 
+  handServo.attach(8); // max position is 160 (translates to about 180, servo not very accurate)
   servo1.attach(9);
   servo2.attach(10);
   servo3.attach(11);
 
-  servo3.shiftOrigin(180);
+  handServo.setBounds(0, 75);
+  servo1.setBounds(0, 180);
+  servo2.setBounds(-60, 0);
+  servo3.setBounds(0, 90);
+
+  servo3.shiftOrigin(180); // shift origin to allow negitive angle inputs
 
   pose = kinematics.getPosition(0, 90, -90, 1, 1, 0);
 
@@ -32,9 +39,11 @@ void setup() {
 void loop() { ///////////////////////////////////////////////TODO fix camal case for parameter names and make code follow c++ coding conventions 
   // put your main code here, to run repeatedly:
 
-  servo1.move(jointAngles.arr[0][0]);
-  servo2.move(jointAngles.arr[1][0]);
-  servo3.move(jointAngles.arr[2][0]);
+  // servo1.move(jointAngles.arr[0][0]);
+  // servo2.move(jointAngles.arr[1][0]);
+  // servo3.move(jointAngles.arr[2][0]);
+  
+  handServo.move(0);
   // servo1.move(0);
   // servo2.move(0);
   // servo3.move(0);
